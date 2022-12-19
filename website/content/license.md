@@ -1,16 +1,15 @@
 +++
 title = "Graphite license"
-template = "page.html"
 +++
 
-<section class="section-row">
+<section class="section-row reading-material">
 <div class="section">
 
-# Graphite license.
+# Graphite license
 
 Graphite is open source software built by the community. The application is free to use by anyone for any purpose, even commercially. The artwork you produce is solely yours.
 
-The source code [available on GitHub](https://github.com/GraphiteEditor/Graphite) (including the Graphite editor application, Graphene system, libraries, and other software materials) is provided under the Apache 2.0 license posted below, unless otherwise noted. Artwork, including but not limited to logos, icons, SVG code, branding imagery, and sample art are excluded from this license and held under copyright by their respective owners. Learn about the [Graphite brand](/logo) for more information.
+The source code [available on GitHub](https://github.com/GraphiteEditor/Graphite) (including the Graphite editor application, libraries, and other software materials) is provided under the Apache 2.0 license posted below, unless otherwise noted. Visual assets, including but not limited to logos, icons, SVG code, branding imagery, and sample artwork are excluded from this license and held under copyright by their respective owners. Learn about the [Graphite brand](/logo) for more information.
 
 ----
 
