@@ -1297,7 +1297,7 @@ fn drag_deepest_manipulation(
 }
 
 fn edit_layer_shallowest_manipulation(document: &DocumentMessageHandler, intersect_layer_path: &Vec<u64>, tool_data: &mut SelectToolData, responses: &mut VecDeque<Message>) {
-	debug!("edit");
+	// debug!("edit");
 	// Double-clicking any layer within an already selected folder should select that layer
 	// Add the first layer path not already included from the intersected to our new layer path
 	let selected_layers: Vec<_> = document.selected_layers().collect();
@@ -1306,8 +1306,6 @@ fn edit_layer_shallowest_manipulation(document: &DocumentMessageHandler, interse
 	let incoming_parent_selected = previous_parents.contains(&&[incoming_parent].as_slice());
 
 	if incoming_parent_selected {
-		// HAVE TO CONSIDER THE OTHER SELCTED LAYERS BEFORE SWITCHING TO PATH TOOL
-
 		// Permutations of intersected layer
 		let intersected_layer_ancestors: Vec<Vec<u64>> = (1..=intersect_layer_path.len()).map(|i| intersect_layer_path[..i].to_vec()).rev().collect();
 		let mut new_layer_path: Vec<u64> = vec![];
