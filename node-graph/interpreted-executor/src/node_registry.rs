@@ -21,7 +21,7 @@ use graph_craft::proto::NodeConstructor;
 
 use graphene_core::{concrete, fn_type, generic, value_fn};
 use graphene_std::memo::{CacheNode, LetNode};
-use graphene_std::raster::{BlendImageTupleNode, MapImageFrameNode};
+use graphene_std::raster::BlendImageTupleNode;
 
 use crate::executor::NodeContainer;
 
@@ -248,7 +248,31 @@ fn node_registry() -> HashMap<NodeIdentifier, HashMap<NodeIOTypes, NodeConstruct
 		raster_node!(graphene_core::raster::InvertRGBNode, params: []),
 		raster_node!(graphene_core::raster::ThresholdNode<_, _, _>, params: [f64, f64, LuminanceCalculation]),
 		raster_node!(graphene_core::raster::VibranceNode<_>, params: [f64]),
-		raster_node!(graphene_core::raster::BrightnessContrastNode< _, _>, params: [f64, f64]),
+		vec![(
+			NodeIdentifier::new("graphene_core::raster::BrightnessContrastNode<_, _, _>"),
+			|args| {
+				use graphene_core::raster::brightness_contrast::*;
+
+				let brightness: DowncastBothNode<(), f64> = DowncastBothNode::new(args[0]);
+				let brightness = ClonedNode::new(brightness.eval(()) as f32);
+				let contrast: DowncastBothNode<(), f64> = DowncastBothNode::new(args[1]);
+				let contrast = ClonedNode::new(contrast.eval(()) as f32);
+				let use_legacy: DowncastBothNode<(), bool> = DowncastBothNode::new(args[2]);
+
+				if use_legacy.eval(()) {
+					let generate_brightness_contrast_legacy_mapper_node = GenerateBrightnessContrastLegacyMapperNode::new(brightness, contrast);
+					let map_image_frame_node = graphene_std::raster::MapImageFrameNode::new(ValueNode::new(generate_brightness_contrast_legacy_mapper_node.eval(())));
+					let any: DynAnyNode<ImageFrame, _, _> = graphene_std::any::DynAnyNode::new(ValueNode::new(map_image_frame_node));
+					Box::pin(any)
+				} else {
+					let generate_brightness_contrast_mapper_node = GenerateBrightnessContrastMapperNode::new(brightness, contrast);
+					let map_image_frame_node = graphene_std::raster::MapImageFrameNode::new(ValueNode::new(generate_brightness_contrast_mapper_node.eval(())));
+					let any: DynAnyNode<ImageFrame, _, _> = graphene_std::any::DynAnyNode::new(ValueNode::new(map_image_frame_node));
+					Box::pin(any)
+				}
+			},
+			NodeIOTypes::new(concrete!(ImageFrame), concrete!(ImageFrame), vec![value_fn!(f64), value_fn!(f64), value_fn!(bool)]),
+		)],
 		raster_node!(graphene_core::raster::OpacityNode<_>, params: [f64]),
 		raster_node!(graphene_core::raster::PosterizeNode<_>, params: [f64]),
 		raster_node!(graphene_core::raster::ExposureNode<_, _, _>, params: [f64, f64, f64]),
@@ -433,6 +457,10 @@ fn node_registry() -> HashMap<NodeIdentifier, HashMap<NodeIOTypes, NodeConstruct
 		register_node!(graphene_core::ops::CloneNode<_>, input: &QuantizationChannels, params: []),
 		register_node!(graphene_core::transform::TransformNode<_, _, _, _, _>, input: VectorData, params: [DVec2, f64, DVec2, DVec2, DVec2]),
 		register_node!(graphene_core::transform::TransformNode<_, _, _, _, _>, input: ImageFrame, params: [DVec2, f64, DVec2, DVec2, DVec2]),
+		register_node!(graphene_core::transform::SetTransformNode<_>, input: VectorData, params: [VectorData]),
+		register_node!(graphene_core::transform::SetTransformNode<_>, input: ImageFrame, params: [ImageFrame]),
+		register_node!(graphene_core::transform::SetTransformNode<_>, input: VectorData, params: [DAffine2]),
+		register_node!(graphene_core::transform::SetTransformNode<_>, input: ImageFrame, params: [DAffine2]),
 		register_node!(graphene_core::vector::SetFillNode<_, _, _, _, _, _, _>, input: VectorData, params: [graphene_core::vector::style::FillType, Option<graphene_core::Color>, graphene_core::vector::style::GradientType, DVec2, DVec2, DAffine2, Vec<(f64, Option<graphene_core::Color>)>]),
 		register_node!(graphene_core::vector::SetStrokeNode<_, _, _, _, _, _, _>, input: VectorData, params: [Option<graphene_core::Color>, f64, Vec<f32>, f64, graphene_core::vector::style::LineCap, graphene_core::vector::style::LineJoin, f64]),
 		register_node!(graphene_core::vector::generator_nodes::UnitCircleGenerator, input: (), params: []),

@@ -580,7 +580,7 @@ impl Fsm for SelectToolFsmState {
 							selected = vec![intersection.clone()];
 
 							match tool_data.nested_selection_behavior {
-								NestedSelectionBehavior::Shallowest => drag_start_shallowest_manipulation(document, selected, input, select_deepest, add_to_selection, tool_data, responses),
+								NestedSelectionBehavior::Shallowest => drag_shallowest_manipulation(document, selected, input, select_deepest, add_to_selection, tool_data, responses),
 								NestedSelectionBehavior::Deepest => drag_deepest_manipulation(responses, selected, tool_data, document, input, render_data),
 							}
 							Dragging
@@ -968,13 +968,7 @@ fn rerender_selected_layers(tool_data: &mut SelectToolData, responses: &mut VecD
 	}
 }
 
-fn rerender_duplicated_layers(tool_data: &mut SelectToolData, responses: &mut VecDeque<Message>) {
-	for layer_path in tool_data.not_duplicated_layers.iter().flatten() {
-		responses.add(DocumentMessage::NodeGraphFrameGenerate { layer_path: layer_path.clone() });
-	}
-}
-
-fn drag_start_shallowest_manipulation(
+fn drag_shallowest_manipulation(
 	document: &DocumentMessageHandler,
 	selected: Vec<Vec<u64>>,
 	input: &InputPreprocessorMessageHandler,
@@ -1357,7 +1351,7 @@ fn edit_layer_deepest_manipulation(intersect: &Layer, responses: &mut VecDeque<M
 		LayerDataType::Shape(_) => {
 			responses.push_front(ToolMessage::ActivateTool { tool_type: ToolType::Path }.into());
 		}
-		LayerDataType::NodeGraphFrame(frame) if frame.vector_data.is_some() => {
+		LayerDataType::NodeGraphFrame(frame) if frame.as_vector_data().is_some() => {
 			responses.push_front(ToolMessage::ActivateTool { tool_type: ToolType::Path }.into());
 		}
 		_ => {}
