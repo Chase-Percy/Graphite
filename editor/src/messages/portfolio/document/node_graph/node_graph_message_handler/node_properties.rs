@@ -8,7 +8,7 @@ use glam::DVec2;
 use graph_craft::document::value::TaggedValue;
 use graph_craft::document::{DocumentNode, NodeId, NodeInput};
 use graph_craft::imaginate_input::*;
-use graphene_core::raster::{ColorChannel, BlendMode, Color, LuminanceCalculation, RedGreenBlue, RelativeAbsolute, SelectiveColorChoice};
+use graphene_core::raster::{BlendMode, Color, ColorChannel, LuminanceCalculation, RedGreenBlue, RelativeAbsolute, SelectiveColorChoice};
 use graphene_core::vector::style::{FillType, GradientType, LineCap, LineJoin};
 
 use super::document_node_types::NodePropertiesContext;

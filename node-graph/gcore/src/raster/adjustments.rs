@@ -14,20 +14,15 @@ use spirv_std::num_traits::float::Float;
 #[derive(Debug, Default, Clone, Copy, Eq, PartialEq, DynAny, Hash)]
 pub enum ColorChannel {
 	#[default]
-    Alpha,
-    Red,
-    Green,
-    Blue,
+	Alpha,
+	Red,
+	Green,
+	Blue,
 }
 
 impl ColorChannel {
 	pub fn list() -> [ColorChannel; 4] {
-		[
-            ColorChannel::Alpha,
-            ColorChannel::Red,
-            ColorChannel::Green,
-            ColorChannel::Blue,
-		]
+		[ColorChannel::Alpha, ColorChannel::Red, ColorChannel::Green, ColorChannel::Blue]
 	}
 }
 
@@ -46,10 +41,10 @@ pub enum LuminanceCalculation {
 impl core::fmt::Display for ColorChannel {
 	fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
 		match self {
-            ColorChannel::Alpha => write!(f, "Alpha"),
-            ColorChannel::Red => write!(f, "Red"),
-            ColorChannel::Green => write!(f, "Green"),
-            ColorChannel::Blue => write!(f, "Blue"),
+			ColorChannel::Alpha => write!(f, "Alpha"),
+			ColorChannel::Red => write!(f, "Red"),
+			ColorChannel::Green => write!(f, "Green"),
+			ColorChannel::Blue => write!(f, "Blue"),
 		}
 	}
 }
@@ -213,17 +208,18 @@ fn luminance_color_node(color: Color, luminance_calc: LuminanceCalculation) -> C
 
 #[derive(Debug, Clone, Copy, Default)]
 pub struct ExtractChannelNode<ColorChannel> {
-    channel: ColorChannel,
+	channel: ColorChannel,
 }
 
 #[node_macro::node_fn(ExtractChannelNode)]
 fn extract_channel_node(color: Color, channel: ColorChannel) -> Color {
-	let extracted_color = 1. - match channel {
-		ColorChannel::Alpha => color.a(),
-		ColorChannel::Red => color.r(),
-		ColorChannel::Green => color.g(),
-		ColorChannel::Blue => color.b(),
-	};
+	let extracted_color = 1.
+		- match channel {
+			ColorChannel::Alpha => color.a(),
+			ColorChannel::Red => color.r(),
+			ColorChannel::Green => color.g(),
+			ColorChannel::Blue => color.b(),
+		};
 	color.map_rgb(|_| extracted_color)
 }
 
