@@ -7,7 +7,7 @@ use graph_craft::document::value::*;
 use graph_craft::document::*;
 use graph_craft::imaginate_input::ImaginateSamplingMethod;
 use graph_craft::NodeIdentifier;
-use graphene_core::raster::{BlendMode, Color, Image, ImageFrame, LuminanceCalculation, RedGreenBlue, RelativeAbsolute, SelectiveColorChoice};
+use graphene_core::raster::{ColorChannel, BlendMode, Color, Image, ImageFrame, LuminanceCalculation, RedGreenBlue, RelativeAbsolute, SelectiveColorChoice};
 use graphene_core::vector::VectorData;
 use graphene_core::*;
 
@@ -407,6 +407,17 @@ fn static_nodes() -> Vec<DocumentNodeType> {
 			],
 			outputs: vec![DocumentOutputType::new("Image", FrontendGraphDataType::Raster)],
 			properties: node_properties::luminance_properties,
+		},
+		DocumentNodeType {
+			name: "Channel Extraction",
+			category: "Image Adjustments",
+			identifier: NodeImplementation::proto("graphene_core::raster::ExtractChannelNode<_>"),
+			inputs: vec![
+				DocumentInputType::value("Image", TaggedValue::ImageFrame(ImageFrame::empty()), true),
+				DocumentInputType::value("Channel", TaggedValue::ColorChannel(ColorChannel::Alpha), false),
+			],
+			outputs: vec![DocumentOutputType::new("Image", FrontendGraphDataType::Raster)],
+			properties: node_properties::channel_extraction_properties,
 		},
 		DocumentNodeType {
 			name: "Gaussian Blur",
