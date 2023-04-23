@@ -2,7 +2,7 @@ use super::DocumentNode;
 use crate::executor::Any;
 pub use crate::imaginate_input::{ImaginateMaskStartingFill, ImaginateSamplingMethod, ImaginateStatus};
 
-use graphene_core::raster::{ColorChannel, BlendMode, LuminanceCalculation};
+use graphene_core::raster::{BlendMode, ColorChannel, LuminanceCalculation};
 use graphene_core::{Color, Node, Type};
 
 pub use dyn_any::StaticType;
